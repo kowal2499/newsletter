@@ -3,10 +3,8 @@ namespace Newsletter\Controllers;
 
 class ErrorController extends AbstractController
 {
-    public function notFound(): string
+    public function notFound()
     {
-        $properties = ['errorMessage' => 'Page not found!'];
-        // return $this->render('error.twig', $properties);
-        return $properties['errorMessage'];
+        $this->render('404.twig');
     }
 }

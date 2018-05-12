@@ -3,8 +3,8 @@ namespace Newsletter\Controllers;
 
 class UserController extends AbstractController
 {
-    public function login(): string
+    public function login()
     {
-        return "login page";
+        $this->render('login.twig');
     }
 }
