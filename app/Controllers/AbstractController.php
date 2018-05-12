@@ -13,6 +13,7 @@ abstract class AbstractController
 {
     protected $request;
     protected $db;
+    protected $user_id;
     protected $config;
     protected $view;
     protected $log;
@@ -23,7 +24,7 @@ abstract class AbstractController
         // $this->db = Db::getInstance();
         // $this->config = Config::getInstance();
         $loader = new Twig_Loader_Filesystem(
-            __DIR__ . '/../../views'
+            __DIR__ . '/../views'
         );
 
         $this->view = new Twig_Environment($loader);
@@ -32,5 +33,22 @@ abstract class AbstractController
         // $this->log->pushHandler(
             // new StreamHandler($logFile, Logger::DEBUG)
         // );
+    }
+
+    /**
+     * Uruchomienie widoku
+     */
+    protected function render(string $tempate, array $params = [])
+    {
+        echo $this->view->loadTemplate($tempate)->render($params);
+    }
+
+    /**
+     * Ustawia id użytkownika
+     * @param int
+     */
+    public function setUserId(int $user_id)
+    {
+        $this->user_id = $user_id;
     }
 }

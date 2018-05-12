@@ -2,8 +2,6 @@
 
 namespace Newsletter\Core;
 
-use Newsletter\Controllers\ErrorController;
-
 class Router
 {
     private $routeMap;
@@ -16,12 +14,12 @@ class Router
     public function __construct()
     {
         $json = file_get_contents(
-            __DIR__ . '/../../config/routes.json'
+            __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR  . '..' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'routes.json'
         );
         $this->routeMap = json_decode($json, true);
     }
 
-    public function route(Request $request): string
+    public function route(Request $request)
     {
         $path = $request->getPath();
         foreach ($this->routeMap as $route => $info) {
@@ -35,7 +33,7 @@ class Router
                 );
             }
         }
-        $errorController = new ErrorController($request);
+        $errorController = new \Newsletter\Controllers\ErrorController($request);
         return $errorController->notFound();
     }
 
@@ -67,17 +65,20 @@ class Router
         return $params;
     }
 
-    private function executeController(string $route, string $path, array $info, Request $request): string
+    private function executeController(string $route, string $path, array $info, Request $request)
     {
         $controllerName = '\Newsletter\Controllers\\' . $info['controller'] . 'Controller';
         $controller = new $controllerName($request);
+        // czy dla bieżącego kontrolera jest wymagany zalogowany użytkownik?
         if (isset($info['login']) && $info['login']) {
             if ($request->getCookies()->has('user')) {
                 $customerId = $request->getCookies()->get('user');
-                $controller->setCustomerId($customerId);
+                $controller->setUserId($customerId);
             } else {
-                $errorController = new CustomerController($request);
-                return $errorController->login();
+                // przekieruj do strony logowania
+                Tools::redirect('login');
+                // $loginController = new \Newsletter\Controllers\UserController($request);
+                // return $loginController->login();
             }
         }
         $params = $this->extractParams($route, $path);
@@ -87,4 +88,3 @@ class Router
         );
     }
 }
-

@@ -2,15 +2,11 @@
 
 namespace Newsletter\Core;
 
-use Newsletter\Core\Router;
-use Newsletter\Core\Request;
-
 class App
 {
     public function __construct()
     {
-        $router = new Router();
-        $response = $router->route(new Request());
-        echo $response;
+        $router = new \Newsletter\Core\Router();
+        $response = $router->route(new \Newsletter\Core\Request());
     }
 }

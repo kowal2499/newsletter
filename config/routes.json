@@ -1,4 +1,9 @@
 {
+    "": {
+        "controller": "Index",
+        "method": "main"
+    },
+
     "books/:page": {
         "controller": "Book",
         "method": "getAllWithPage",
@@ -6,12 +11,13 @@
             "page": "number"
         }
     },
-    "books": {
-        "controller": "Book",
-        "method": "getAll"
+    "about": {
+        "controller": "About",
+        "method": "main",
+        "login": true
     }, 
     "login": {
-        "controller": "Customer",
+        "controller": "User",
         "method": "login"
     }
 }
