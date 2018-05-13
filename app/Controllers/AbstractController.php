@@ -5,8 +5,9 @@ namespace Newsletter\Controllers;
 // use Bookstore\Core\Db;
 use Newsletter\Core\Request;
 use Monolog\Logger;
-use Twig_Environment;
-use Twig_Loader_Filesystem;
+
+use Newsletter\Providers\TwigServiceProvider;
+
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
 
@@ -34,14 +35,9 @@ abstract class AbstractController
             define($item, $value);
         }
 
-        // Twig provider
-        $loader = new Twig_Loader_Filesystem(
-            $this->config['twig']['dir']
-        );
-        $this->view = new Twig_Environment($loader, [
-            'cache' => $this->config['twig']['cache'],
-            'auto_reload' => true
-        ]);
+        $twig = new TwigServiceProvider($this->config);
+        $this->view = $twig->provide();
+
         // Doctrine provider
         $config = Setup::createAnnotationMetadataConfiguration([], true);
         $this->entityManager = EntityManager::create($this->config['database'], $config);
