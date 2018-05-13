@@ -1,0 +1,25 @@
+{
+  "name": "newsletter",
+  "version": "1.0.0",
+  "description": "yet another newsletter manager",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kowal2499/newsletter.git"
+  },
+  "author": "Roman Kowalski",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kowal2499/newsletter/issues"
+  },
+  "homepage": "https://github.com/kowal2499/newsletter#readme",
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "gulp": "^3.9.1",
+    "jQuery": "^1.7.4",
+    "requirejs": "^2.3.5"
+  }
+}

@@ -1,3 +1,10 @@
 /vendor/*
+/node_modules/*
+/public/*
+/config/*
+/app/cache/*
+
+
 composer.lock
 newsletter.code-workspace
+package-lock.json

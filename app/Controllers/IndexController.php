@@ -8,6 +8,6 @@ class IndexController extends AbstractController
         $values = [
             'today' => date('Y-m-d')
         ];
-        $this->render('index.twig', $values);
+        $this->render('index.html.twig', $values);
     }
 }
