@@ -26,12 +26,17 @@ class Request
 
     public function getUrl(): string
     {
-        return $this->domain . $this->path;
+        $domain = $this->getDomain();
+        if (!empty($domain)) {
+            return $domain . $this->path;
+        } else {
+            return '';
+        }
     }
 
     public function getDomain(): string
     {
-        return $this->domain;
+        return isset($_SERVER['HTTP_HOST']) ? ('http://' . $_SERVER['HTTP_HOST']) : '';
     }
     
     public function getPath(): string
