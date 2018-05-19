@@ -72,4 +72,7 @@ abstract class AbstractController
     {
         $this->user_id = $user_id;
     }
+
+        
+    
 }

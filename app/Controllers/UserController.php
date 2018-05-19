@@ -25,9 +25,16 @@ class UserController extends AbstractController
         $em->flush();
         */
 
+        if (empty($_POST) === false) {
+            var_dump($_POST);
+        }
+
         $users = $em->getRepository('Newsletter\Models\User')->findAll();
         $this->render('login.html.twig', [
-            'users' => $users
+            'users' => $users,
+            'email' => $this->request->getParams()->get('email'),
+            'password' => $this->request->getParams()->get('password'),
+            'url' => $this->request->getUrl()
         ]);
-    }
+    } 
 }
