@@ -3,8 +3,13 @@
 /public/*
 /config/*
 /app/cache/*
-
+/resources/img/*
+/resources/js/vendor/*
+/resources/styles/vendor/*
+/resources/styles/custom/custom.css
 
 composer.lock
 newsletter.code-workspace
 package-lock.json
+layout.html.twig
+package-lock.json.htaccess

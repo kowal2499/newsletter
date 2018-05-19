@@ -11,14 +11,7 @@
 
     <title>My newsletter - {% block title %}{% endblock %}</title>
 
-    <!-- Bootstrap core CSS -->
-    <link href="public/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <link href="public/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
-    <link href="public/css/dashboard.css" rel="stylesheet">
+    <link href="public/app.css?rev=" rel="stylesheet">
 
   </head>
 
@@ -66,16 +59,13 @@
       </div>
     </div>
 
+
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>-->
-    <script src="public/js/jquery.js"></script>
-    <script>window.jQuery || document.write('<script src="public/node-jquery.js"><\/script>')</script>
-    <script src="public/js/bootstrap.min.js"></script>
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="public/js/ie10-viewport-bug-workaround.js"></script>
 
-    <script type="text/javascript" src="{{ asset('js/script.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('app.js?rev=') }}"></script>
+
   </body>
 </html>
