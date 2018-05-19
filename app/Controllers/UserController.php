@@ -36,5 +36,5 @@ class UserController extends AbstractController
             'password' => $this->request->getParams()->get('password'),
             'url' => $this->request->getUrl()
         ]);
-    }
+    } 
 }
