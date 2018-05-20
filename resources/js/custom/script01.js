@@ -1,3 +1,4 @@
 var App = {
-    init: null
+    init: null,
+    test: 'test33348888dd88899ss'
 };

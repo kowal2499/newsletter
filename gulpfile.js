@@ -6,7 +6,10 @@ var uglify = require('gulp-uglify');
 var notify = require('gulp-notify');
 var plumber = require('gulp-plumber');
 var autoprefixer = require('gulp-autoprefixer');
-var rev = require('gulp-rev-append');
+var rev = require('gulp-rev');
+var revDel = require('rev-del');
+// var revise = require('gulp-revise');
+// var del = require('del');
 
 
 var cssAssets = [
@@ -18,7 +21,7 @@ var jsAssets = [
     './resources/js/vendor/jquery-3.3.1.js',
     './resources/js/vendor/bootstrap.min.js',
     './resources/js/vendor/ie10-viewport-bug-workaround.min.js',
-    './resources/js/custom/*.js',
+    './resources/js/custom/*.js'
     // 'node_modules/quill/dist/quill.js'
 ]
 
@@ -36,30 +39,54 @@ gulp.task('sass', function() {
 gulp.task('bundleCSS', function() {
     gulp.src(cssAssets)
         .pipe(concat('app.css'))
-        .pipe(gulp.dest('./public'))
+        // .pipe(revise())
         .on('error', notify.onError("Error: <%= error.message %>"))
+        .pipe(gulp.dest('./public'))
+        
+        // .pipe(rev.manifest('rev-manifest.json', {
+        //     merge: true
+        // }))
+        // .pipe(revDel({dest: './public'})) 
+        // .pipe(revise.write('public'))
+        // .pipe(gulp.dest('public'))  // write manifest to build dir
 });
 
 gulp.task('js', function() {
-    gulp.src(jsAssets)
+    return gulp.src(jsAssets)
+        
         .pipe(concat('app.js', {newLine: ';'}))
         .pipe(uglify())
-        .pipe(gulp.dest('./public'));
+        // .pipe(revise())
+        // .pipe(rev())
+        .pipe(gulp.dest('./public'))
+        // .pipe(rev.manifest('rev-manifest.json', {
+            // merge: true
+        // }))
+        // .pipe(revDel({ dest: './public' })) 
+        // .pipe(revise.write('public'))
+        // .pipe(gulp.dest('public'))
 });
 
-// This task will add a cache  buster to file with  ?rev=@@hash added to it.  This forces a users cache to refresh anytime there is a change.
-
-gulp.task('rev', function() {
-    gulp.src('./app/views/layout.html.twig')
+gulp.task('revision', function() {
+    return gulp.src(['public/app.css', 'public/app.js'])
         .pipe(rev())
-        .pipe(gulp.dest('./app/views/'));
-});
+        .pipe(gulp.dest('public'))
+        .pipe(rev.manifest({ path: 'rev-manifest.json', merge: true }))
+        .pipe(revDel({ dest: 'public' }))
+        .pipe(gulp.dest('public'))
+       });
 
+gulp.task('manifest', function() {
+    del('public/rev-manifest.json');
+    gulp.src('public/*.rev')
+    .pipe(revise.merge('public'))
+    // .pipe(gulp.dest('public'));
+});
 
 gulp.task('watch', function() {
     gulp.watch('./resources/styles/**/*.scss', ['sass']);
-    gulp.watch('./resources/styles/**/*.css', ['bundleCSS', 'rev']);
-    gulp.watch('./resources/js/**/*.js', ['js', 'rev']);
+    gulp.watch('./resources/styles/**/*.css', ['bundleCSS', 'revision']);
+    gulp.watch('./resources/js/**/*.js', ['js', 'revision']);
 });
 
 gulp.task('default', ['sass', 'bundleCSS', 'js', 'watch']);
