@@ -1,22 +1,18 @@
 var gulp = require('gulp');
+var rev = require('gulp-rev');
+var clean = require('gulp-clean');
+var fs = require('fs');
 var sass = require('gulp-sass');
-var jshint = require('gulp-jshint');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
-var notify = require('gulp-notify');
-var plumber = require('gulp-plumber');
-var autoprefixer = require('gulp-autoprefixer');
-var rev = require('gulp-rev');
-var revDel = require('rev-del');
-// var revise = require('gulp-revise');
-// var del = require('del');
 
-
+var distFolder = './dist';
+var sassAsset = './resources/styles/custom/*.scss';
+var compiledSassFolder = './resources/styles/custom';
 var cssAssets = [
     './resources/styles/vendor/**/*.css',
-    './resources/styles/custom/custom.css'
+    compiledSassFolder + '/*.css'
 ];
-
 var jsAssets = [
     './resources/js/vendor/jquery-3.3.1.js',
     './resources/js/vendor/bootstrap.min.js',
@@ -26,67 +22,52 @@ var jsAssets = [
 ]
 
 gulp.task('sass', function() {
-    gulp.src('./resources/styles/custom/*.scss')
+    return gulp.src(sassAsset)
         .pipe(sass({
             outputStyle: 'compressed'
         }))
-        .on('error', notify.onError("Error: <%= error.message %>"))
-        .pipe(autoprefixer())
-        .pipe(plumber())
-        .pipe(gulp.dest('./resources/styles/custom'));
+        .pipe(gulp.dest(compiledSassFolder));
 });
 
-gulp.task('bundleCSS', function() {
-    gulp.src(cssAssets)
+gulp.task('bundleCSS', ['sass'], function() {
+    return gulp.src(cssAssets)
         .pipe(concat('app.css'))
-        // .pipe(revise())
-        .on('error', notify.onError("Error: <%= error.message %>"))
-        .pipe(gulp.dest('./public'))
-        
-        // .pipe(rev.manifest('rev-manifest.json', {
-        //     merge: true
-        // }))
-        // .pipe(revDel({dest: './public'})) 
-        // .pipe(revise.write('public'))
-        // .pipe(gulp.dest('public'))  // write manifest to build dir
+        .pipe(gulp.dest(distFolder));
 });
 
-gulp.task('js', function() {
+gulp.task('js', ['bundleCSS'], function() {
     return gulp.src(jsAssets)
-        
         .pipe(concat('app.js', {newLine: ';'}))
         .pipe(uglify())
-        // .pipe(revise())
-        // .pipe(rev())
-        .pipe(gulp.dest('./public'))
-        // .pipe(rev.manifest('rev-manifest.json', {
-            // merge: true
-        // }))
-        // .pipe(revDel({ dest: './public' })) 
-        // .pipe(revise.write('public'))
-        // .pipe(gulp.dest('public'))
+        .pipe(gulp.dest(distFolder));
 });
 
-gulp.task('revision', function() {
-    return gulp.src(['public/app.css', 'public/app.js'])
+gulp.task('hash', ['js'], function() {
+    return gulp.src([
+        distFolder + '/app.css',
+        distFolder + '/app.js'
+        ])
         .pipe(rev())
-        .pipe(gulp.dest('public'))
-        .pipe(rev.manifest({ path: 'rev-manifest.json', merge: true }))
-        .pipe(revDel({ dest: 'public' }))
-        .pipe(gulp.dest('public'))
-       });
+        .pipe(gulp.dest(distFolder))
+        .pipe(rev.manifest())
+        .pipe(gulp.dest(distFolder));
+});
 
-gulp.task('manifest', function() {
-    del('public/rev-manifest.json');
-    gulp.src('public/*.rev')
-    .pipe(revise.merge('public'))
-    // .pipe(gulp.dest('public'));
+gulp.task('delete', ['hash'], function() {
+    var json = JSON.parse(fs.readFileSync(distFolder + '/rev-manifest.json'));
+    return gulp.src([
+        distFolder + '/*.css', 
+        distFolder + '/*.js',
+        '!' + distFolder + '/' + json['app.css'],
+        '!' + distFolder + '/' + json['app.js']
+        ])
+        .pipe(clean());
 });
 
 gulp.task('watch', function() {
-    gulp.watch('./resources/styles/**/*.scss', ['sass']);
-    gulp.watch('./resources/styles/**/*.css', ['bundleCSS', 'revision']);
-    gulp.watch('./resources/js/**/*.js', ['js', 'revision']);
+    gulp.watch('./resources/styles/**/*.scss', ['delete']);
+    gulp.watch('./resources/styles/**/*.css', ['delete']);
+    gulp.watch('./resources/js/**/*.js', ['delete']);
 });
 
-gulp.task('default', ['sass', 'bundleCSS', 'js', 'watch']);
+gulp.task('default', ['delete']);
