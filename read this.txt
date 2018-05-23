@@ -1,0 +1,5 @@
+https://www.nafrontendzie.pl/hashowanie-plikow-css-pomoca-gulp
+
+https://www.nafrontendzie.pl/podstawy-konfiguracji-gulp
+
+https://www.nafrontendzie.pl/gulp-oraz-webpack-polaczyc

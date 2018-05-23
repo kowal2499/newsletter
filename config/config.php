@@ -2,12 +2,15 @@
 
 return [
     'defines' => [
-        'URL' => isset($_SERVER['HTTP_HOST']) ? ('http://' . $_SERVER['HTTP_HOST'] . '/') : null
+        'URL' => isset($_SERVER['HTTP_HOST']) ? ('http://' . $_SERVER['HTTP_HOST'] . '/') : null,
+        'DS' => DIRECTORY_SEPARATOR
     ],
 
     'twig' => [
         'dir' => __DIR__ . '/../app/views',
-        'cache' => __DIR__ . '/../app/cache'
+        'cache' => __DIR__ . '/../app/cache',
+        'manifest' => __DIR__ . '/../dist/rev-manifest.json',
+        'assetsDir' => '/dist/'
     ],
 
     'database' => [
