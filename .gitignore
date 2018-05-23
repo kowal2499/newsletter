@@ -1,4 +1,5 @@
 dist/
+
 vendor/
 node_modules/
 public/
@@ -15,3 +16,4 @@ newsletter.code-workspace
 package-lock.json
 layout.html.twig
 package-lock.json.htaccess
+dist/rev-manifest.json
