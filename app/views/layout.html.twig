@@ -11,7 +11,7 @@
 
     <title>My newsletter - {% block title %}{% endblock %}</title>
 
-    <link href="public/app.css?rev=" rel="stylesheet">
+    <link href="{{ getAsset('app.css') }}" rel="stylesheet">
 
   </head>
 
@@ -59,13 +59,13 @@
       </div>
     </div>
 
-
+    {{ getAsset('appa.js') }}
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>-->
 
-    <script type="text/javascript" src="{{ asset('app.js?rev=') }}"></script>
+    <script type="text/javascript" src="{{ getAsset('app.js') }}"></script>
 
   </body>
 </html>

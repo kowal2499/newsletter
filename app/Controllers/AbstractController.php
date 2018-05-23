@@ -35,7 +35,7 @@ abstract class AbstractController
             define($item, $value);
         }
 
-        $twig = new TwigServiceProvider($this->config);
+        $twig = new TwigServiceProvider($this->config['twig']);
         $this->view = $twig->provide();
 
         // Doctrine provider

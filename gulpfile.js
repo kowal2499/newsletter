@@ -66,7 +66,7 @@ gulp.task('delete', ['hash'], function() {
 
 gulp.task('watch', function() {
     gulp.watch('./resources/styles/**/*.scss', ['delete']);
-    gulp.watch('./resources/styles/**/*.css', ['delete']);
+    // gulp.watch('./resources/styles/**/*.css', ['delete']);
     gulp.watch('./resources/js/**/*.js', ['delete']);
 });
 
