@@ -8,7 +8,7 @@ class FilteredMap
 
     public function __construct(array $baseMap)
     {
-        $this->map = $baseMap;
+        $this->map = array_filter($baseMap);
     }
 
     public function has(string $name): bool

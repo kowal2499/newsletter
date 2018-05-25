@@ -19,7 +19,10 @@ class Request
         $this->path = $_SERVER['REQUEST_URI'];
         $this->method = $_SERVER['REQUEST_METHOD'];
         $this->params = new FilteredMap(
-            array_merge($_POST, $_GET)
+            array_merge(
+                array_filter($_POST), 
+                array_filter($_GET)
+            )
         );
         $this->cookies = new FilteredMap($_COOKIE);
     }

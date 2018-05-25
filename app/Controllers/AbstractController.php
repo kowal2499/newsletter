@@ -30,7 +30,7 @@ abstract class AbstractController
         // process config
         $this->config = include(__DIR__ . '/../../config/config.php');
 
-        // process defines
+        // process definitions
         foreach ($this->config['defines'] as $item => $value) {
             define($item, $value);
         }

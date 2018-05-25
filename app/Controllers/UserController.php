@@ -24,16 +24,23 @@ class UserController extends AbstractController
         $em->persist($user);
         $em->flush();
         */
+        $login_params = [];
 
-        if (empty($_POST) === false) {
-            var_dump($_POST);
+        $post = $this->request->getParams();
+        if (!empty($post)) {
+            $login_params = array_filter($post->get('login'));
         }
-
-        $users = $em->getRepository('Newsletter\Models\User')->findAll();
+        
+        if (!empty($login_params['email']) && !empty($login_params['password'])) {
+            // $users = $em->getRepository('Newsletter\Models\User')->findAll();
+            $users = $em->getRepository('Newsletter\Models\User')->findBy(['name' => $login_params['email']]);
+            var_dump($users);
+        }
+        
         $this->render('login.html.twig', [
             'users' => $users,
-            'email' => $this->request->getParams()->get('email'),
-            'password' => $this->request->getParams()->get('password'),
+            'email' => $login_params['email'] ?? '',
+            'password' => $login_params['password'] ?? '',
             'url' => $this->request->getUrl()
         ]);
     } 
