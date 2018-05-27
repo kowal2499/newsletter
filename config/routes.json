@@ -1,23 +1,24 @@
 {
     "": {
         "controller": "Index",
-        "method": "main"
+        "method": "main",
+        "login": true
     },
 
-    "books/:page": {
-        "controller": "Book",
-        "method": "getAllWithPage",
-        "params": {
-            "page": "number"
-        }
-    },
     "about": {
         "controller": "About",
         "method": "main",
         "login": true
-    }, 
+    },
+    
     "login": {
         "controller": "User",
         "method": "login"
+    },
+
+    "logout": {
+        "controller": "User",
+        "method": "logout",
+        "login": true
     }
 }

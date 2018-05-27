@@ -5,9 +5,7 @@ namespace Newsletter\Controllers;
 // use Bookstore\Core\Db;
 use Newsletter\Core\Request;
 use Monolog\Logger;
-
 use Newsletter\Providers\TwigServiceProvider;
-
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
 use Monolog\Handler\StreamHandler;
@@ -39,13 +37,17 @@ abstract class AbstractController
 
         // Doctrine provider
         $config = Setup::createAnnotationMetadataConfiguration([], true);
-        $this->entityManager = EntityManager::create($this->config['database'], $config);
+        $this->em = EntityManager::create($this->config['database'], $config);
 
         // Logger provider
         $this->log = new Logger('newsletter');
         
         // organizacja
+        $this->o_id = null;
         $this->o = $this->setOrganization();
+
+        // ustawienie użytkownika na podstawie sesji
+        $this->u = $this->setUser();
     }
 
     /**
@@ -53,22 +55,18 @@ abstract class AbstractController
      */
     protected function render(string $tempate, array $params = [])
     {
-        $content =  $this->view->loadTemplate($tempate)->render($params);
+        $extra = [
+            'userName' => $this->u ? $this->u->getName() : null
+        ];
+        $content =  $this->view->loadTemplate($tempate)->render(
+            array_merge($params, $extra)
+        );
         echo $content;
     }
 
     protected function getEntityManager()
     {
-        return $this->entityManager;
-    }
-
-    /**
-     * Ustawia id użytkownika
-     * @param int
-     */
-    public function setUserId(int $user_id)
-    {
-        $this->user_id = $user_id;
+        return $this->em;
     }
 
     /**
@@ -76,11 +74,41 @@ abstract class AbstractController
      */
     private function setOrganization()
     {
-        $o = $this->entityManager->getRepository('Newsletter\Models\Organization')->findBy(['url' => $this->request->getDomain()]);
-        return $o ?? null;
+        $o = $this->em->getRepository(\Newsletter\Models\Organization::class)->findOneBy(['url' => $this->request->getDomain()]);
+        if ($o) {
+            $this->o_id = $o->getOrganizationId();
+            return $o;
+        }
+        return null;
     }
 
+    /**
+     * Ustawienie aktywnego użytkownika na podstawie sesji
+     */
+    private function setUser()
+    {
+        $userId = $_SESSION['user_id'] ?? null;
+        $password = $_SESSION['password'] ?? null;
+        if ($userId && $password) {
+            // mamy jakieś dane w sesji, sprawdzamy czy są to właściwe dane logowania
+            $user = $this->em->getRepository(\Newsletter\Models\User::class)->findOneBy([
+                'user_id' => $userId,
+                'organization_id' => $this->o->getOrganizationId(),
+                'password' => $password
+            ]);
 
-        
-    
+            if (!empty($user)) {
+                return $user;
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    public function getUser()
+    {
+        return $this->u;
+    }
 }

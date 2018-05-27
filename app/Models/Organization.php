@@ -15,4 +15,9 @@ class Organization
     private $name = null;
     /** @Column(type="string") **/
     private $url;
+
+    public function getOrganizationId()
+    {
+        return $this->organization_id;
+    }
 }

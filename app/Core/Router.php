@@ -70,15 +70,10 @@ class Router
         $controllerName = '\Newsletter\Controllers\\' . $info['controller'] . 'Controller';
         $controller = new $controllerName($request);
         // czy dla bieżącego kontrolera jest wymagany zalogowany użytkownik?
-        if (isset($info['login']) && $info['login']) {
-            if ($request->getCookies()->has('user')) {
-                $customerId = $request->getCookies()->get('user');
-                $controller->setUserId($customerId);
-            } else {
-                // przekieruj do strony logowania
+        if (isset($info['login']) && $info['login'] === true) {
+            if ($controller->getUser() === null) {
+                // brak użytkownika w sesji, przekieruj do strony logowania
                 Tools::redirect('login');
-                // $loginController = new \Newsletter\Controllers\UserController($request);
-                // return $loginController->login();
             }
         }
         $params = $this->extractParams($route, $path);

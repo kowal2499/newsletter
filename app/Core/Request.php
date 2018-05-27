@@ -24,6 +24,7 @@ class Request
                 array_filter($_GET)
             )
         );
+        $this->session = new FilteredMap($_SESSION);
         $this->cookies = new FilteredMap($_COOKIE);
     }
 
@@ -69,5 +70,9 @@ class Request
     public function getCookies(): FilteredMap
     {
         return $this->cookies;
+    }
+    public function getSession(): FilteredMap
+    {
+        return $this->session;
     }
 }

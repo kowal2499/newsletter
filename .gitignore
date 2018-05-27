@@ -9,7 +9,7 @@ resources/img/
 resources/js/vendor/
 resources/styles/vendor/
 
-
+config.php
 custom.css
 composer.lock
 newsletter.code-workspace
