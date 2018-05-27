@@ -3,7 +3,8 @@
 return [
     'defines' => [
         'URL' => isset($_SERVER['HTTP_HOST']) ? ('http://' . $_SERVER['HTTP_HOST'] . '/') : null,
-        'DS' => DIRECTORY_SEPARATOR
+        'DS' => DIRECTORY_SEPARATOR,
+        'SALT' => 'TsyZj!QFFaF6+GD|-+NDQ!F>#Zk+$jHQ-X;v.e9P=%7+BZxG[hUudQX>S]O#%4+c'
     ],
 
     'twig' => [

@@ -5,12 +5,9 @@ namespace Newsletter\Controllers;
 // use Bookstore\Core\Db;
 use Newsletter\Core\Request;
 use Monolog\Logger;
-
 use Newsletter\Providers\TwigServiceProvider;
-
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
-
 use Monolog\Handler\StreamHandler;
 
 abstract class AbstractController
@@ -30,7 +27,7 @@ abstract class AbstractController
         // process config
         $this->config = include(__DIR__ . '/../../config/config.php');
 
-        // process defines
+        // process definitions
         foreach ($this->config['defines'] as $item => $value) {
             define($item, $value);
         }
@@ -40,14 +37,17 @@ abstract class AbstractController
 
         // Doctrine provider
         $config = Setup::createAnnotationMetadataConfiguration([], true);
-        $this->entityManager = EntityManager::create($this->config['database'], $config);
+        $this->em = EntityManager::create($this->config['database'], $config);
 
         // Logger provider
         $this->log = new Logger('newsletter');
-        // $logFile = $this->config->get('log');
-        // $this->log->pushHandler(
-            // new StreamHandler($logFile, Logger::DEBUG)
-        // );
+        
+        // organizacja
+        $this->o_id = null;
+        $this->o = $this->setOrganization();
+
+        // ustawienie użytkownika na podstawie sesji
+        $this->u = $this->setUser();
     }
 
     /**
@@ -55,24 +55,60 @@ abstract class AbstractController
      */
     protected function render(string $tempate, array $params = [])
     {
-        $content =  $this->view->loadTemplate($tempate)->render($params);
+        $extra = [
+            'userName' => $this->u ? $this->u->getName() : null
+        ];
+        $content =  $this->view->loadTemplate($tempate)->render(
+            array_merge($params, $extra)
+        );
         echo $content;
     }
 
     protected function getEntityManager()
     {
-        return $this->entityManager;
+        return $this->em;
     }
 
     /**
-     * Ustawia id użytkownika
-     * @param int
+     * Ustawienie organizacji
      */
-    public function setUserId(int $user_id)
+    private function setOrganization()
     {
-        $this->user_id = $user_id;
+        $o = $this->em->getRepository(\Newsletter\Models\Organization::class)->findOneBy(['url' => $this->request->getDomain()]);
+        if ($o) {
+            $this->o_id = $o->getOrganizationId();
+            return $o;
+        }
+        return null;
     }
 
-        
-    
+    /**
+     * Ustawienie aktywnego użytkownika na podstawie sesji
+     */
+    private function setUser()
+    {
+        $userId = $_SESSION['user_id'] ?? null;
+        $password = $_SESSION['password'] ?? null;
+        if ($userId && $password) {
+            // mamy jakieś dane w sesji, sprawdzamy czy są to właściwe dane logowania
+            $user = $this->em->getRepository(\Newsletter\Models\User::class)->findOneBy([
+                'user_id' => $userId,
+                'organization_id' => $this->o->getOrganizationId(),
+                'password' => $password
+            ]);
+
+            if (!empty($user)) {
+                return $user;
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
+    public function getUser()
+    {
+        return $this->u;
+    }
 }

@@ -19,14 +19,18 @@ class Request
         $this->path = $_SERVER['REQUEST_URI'];
         $this->method = $_SERVER['REQUEST_METHOD'];
         $this->params = new FilteredMap(
-            array_merge($_POST, $_GET)
+            array_merge(
+                array_filter($_POST), 
+                array_filter($_GET)
+            )
         );
+        $this->session = new FilteredMap($_SESSION);
         $this->cookies = new FilteredMap($_COOKIE);
     }
 
     public function getUrl(): string
     {
-        $domain = $this->getDomain();
+        $domain = !empty($this->getDomain()) ? ('http://' . $this->getDomain()) : '';
         if (!empty($domain)) {
             return $domain . $this->path;
         } else {
@@ -36,7 +40,7 @@ class Request
 
     public function getDomain(): string
     {
-        return isset($_SERVER['HTTP_HOST']) ? ('http://' . $_SERVER['HTTP_HOST']) : '';
+        return isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
     }
     
     public function getPath(): string
@@ -66,5 +70,9 @@ class Request
     public function getCookies(): FilteredMap
     {
         return $this->cookies;
+    }
+    public function getSession(): FilteredMap
+    {
+        return $this->session;
     }
 }
