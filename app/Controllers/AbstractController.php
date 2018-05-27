@@ -10,7 +10,6 @@ use Newsletter\Providers\TwigServiceProvider;
 
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
-
 use Monolog\Handler\StreamHandler;
 
 abstract class AbstractController
@@ -44,10 +43,9 @@ abstract class AbstractController
 
         // Logger provider
         $this->log = new Logger('newsletter');
-        // $logFile = $this->config->get('log');
-        // $this->log->pushHandler(
-            // new StreamHandler($logFile, Logger::DEBUG)
-        // );
+        
+        // organizacja
+        $this->o = $this->setOrganization();
     }
 
     /**
@@ -72,6 +70,16 @@ abstract class AbstractController
     {
         $this->user_id = $user_id;
     }
+
+    /**
+     * Ustawienie organizacji
+     */
+    private function setOrganization()
+    {
+        $o = $this->entityManager->getRepository('Newsletter\Models\Organization')->findBy(['url' => $this->request->getDomain()]);
+        return $o ?? null;
+    }
+
 
         
     

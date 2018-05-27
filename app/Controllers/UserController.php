@@ -24,10 +24,12 @@ class UserController extends AbstractController
         $em->persist($user);
         $em->flush();
         */
-        $login_params = [];
+        $login_params = $users = [];
+
+        var_dump($this->request->getDomain());
 
         $post = $this->request->getParams();
-        if (!empty($post)) {
+        if (!empty($post->get('login'))) {
             $login_params = array_filter($post->get('login'));
         }
         

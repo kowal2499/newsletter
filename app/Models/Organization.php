@@ -1,18 +1,18 @@
 <?php
 
-namespace Newsletter\Model;
+namespace Newsletter\Models;
 
 use Doctrine\ORM\Annotation as ORM;
 
 /**
  * @Entity @Table(name="organizations")
  */
-class Organizations
+class Organization
 {
     /** @Id @Column(type="integer") @GeneratedValue **/
     private $organization_id;
-    /** @Column(type="string") **/
-    private $name;
+    /** @Column(type="string", nullable=true) **/
+    private $name = null;
     /** @Column(type="string") **/
     private $url;
 }

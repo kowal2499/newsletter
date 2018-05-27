@@ -29,7 +29,7 @@ class Request
 
     public function getUrl(): string
     {
-        $domain = $this->getDomain();
+        $domain = !empty($this->getDomain()) ? ('http://' . $this->getDomain()) : '';
         if (!empty($domain)) {
             return $domain . $this->path;
         } else {
@@ -39,7 +39,7 @@ class Request
 
     public function getDomain(): string
     {
-        return isset($_SERVER['HTTP_HOST']) ? ('http://' . $_SERVER['HTTP_HOST']) : '';
+        return isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
     }
     
     public function getPath(): string
